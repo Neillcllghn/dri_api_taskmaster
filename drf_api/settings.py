@@ -63,11 +63,10 @@ SECRET_KEY = os.getenv('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = 'DEV' in os.environ
 
-ALLOWED_HOSTS = ['localhost',
-                 'taskmaster-django-rest-5e7a6a0f075a.herokuapp.com']
-
-# ALLOWED_HOSTS = ['8000-neillcllghn-dri-api-task-seg98p89jd.us2.codeanyapp.com']
-
+ALLOWED_HOSTS = [
+    os.environ.get('ALLOWED_HOST'),
+    'localhost',
+]
 
 # Application definition
 
@@ -108,13 +107,13 @@ MIDDLEWARE = [
 ]
 
 if 'CLIENT_ORIGIN' in os.environ:
-    CORS_ALLOWED_ORIGINS = [
-        os.environ.get('CLIENT_ORIGIN')
-        ]
-else:
+    extracted_url = re.match(
+        r'^([^.]+)', os.environ.get('CLIENT_ORIGIN_DEV', ''), re.IGNORECASE).group(0)
+
     CORS_ALLOWED_ORIGIN_REGEXES = [
-        r"^https://.*\.gitpod\.io$",
-        ]
+        rf"{extracted_url}.(eu|us)\d+\.codeanyapp\.com$",
+    ]
+
 
 CORS_ALLOW_CREDENTIALS = True
 
@@ -144,15 +143,15 @@ WSGI_APPLICATION = 'drf_api.wsgi.application'
 
 if 'DEV' in os.environ:
     DATABASES = {
-         'default': {
-             'ENGINE': 'django.db.backends.sqlite3',
-             'NAME': BASE_DIR / 'db.sqlite3',
-         }
-     }
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
+    }
 else:
     DATABASES = {
         'default': dj_database_url.parse(os.environ.get("DATABASE_URL"))
-     }
+    }
 
 # Password validation
 # https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators
