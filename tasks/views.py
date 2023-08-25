@@ -2,6 +2,7 @@ from rest_framework import generics, permissions, filters
 from drf_api.permissions import IsOwnerOrReadOnly
 from .models import Task
 from .serializers import TaskSerializer, TaskDetailSerializer
+from django_filters.rest_framework import DjangoFilterBackend
 
 
 class TaskList(generics.ListCreateAPIView):
@@ -10,11 +11,16 @@ class TaskList(generics.ListCreateAPIView):
     queryset = Task.objects.all()
     filter_backends = [
         filters.SearchFilter,
+        DjangoFilterBackend,
     ]
     search_fields = [
         'owner__username',
         'category__category_title',
         'title',
+    ]
+    filterset_fields = [
+        'completed',
+        'is_urgent',
     ]
 
     def perform_create(self, serializer):
