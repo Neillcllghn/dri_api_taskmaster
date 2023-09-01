@@ -13,9 +13,9 @@ class TaskSerializer(serializers.ModelSerializer):
     profile_image = serializers.ReadOnlyField(source='owner.profile.image.url')
 
     def validate(self, data):
-        if data['due_date'] < timezone.now().date():
+        if self.instance is None and data['due_date'] < timezone.now().date():
             raise serializers.ValidationError(
-                "The date cannot be in the past!")
+                "The date cannot be in the past when creating a task!")
         return data
 
     def get_is_owner(self, obj):
