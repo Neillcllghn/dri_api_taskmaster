@@ -1,7 +1,7 @@
 from django.contrib.humanize.templatetags.humanize import naturaltime
 from rest_framework import serializers
 from django.utils import timezone
-from .models import Task
+from .models import Task, Category
 
 
 class TaskSerializer(serializers.ModelSerializer):
@@ -11,6 +11,14 @@ class TaskSerializer(serializers.ModelSerializer):
     updated_at = serializers.SerializerMethodField()
     profile_id = serializers.ReadOnlyField(source='owner.profile.id')
     profile_image = serializers.ReadOnlyField(source='owner.profile.image.url')
+    category = serializers.PrimaryKeyRelatedField(
+        queryset=Category.objects.none())
+
+    def __init__(self, *args, **kwargs):
+        request = kwargs['context']['request']
+        user = request.user
+        super(TaskSerializer, self).__init__(*args, **kwargs)
+        self.fields['category'].queryset = Category.objects.filter(owner=user)
 
     def validate(self, data):
         if self.instance is None and data['due_date'] < timezone.now().date():
