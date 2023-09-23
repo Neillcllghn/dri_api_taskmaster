@@ -11,7 +11,7 @@ from rest_framework import status
 
 class TaskList(generics.ListCreateAPIView):
     serializer_class = TaskSerializer
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    permission_classes = [permissions.IsAuthenticated]
     queryset = Task.objects.all()
     filter_backends = [
         filters.SearchFilter,
