@@ -1,39 +1,130 @@
-![CI logo](https://codeinstitute.s3.amazonaws.com/fullstack/ci_logo_small.png)
+# TaskMaster - API
+## Project Description
 
-Welcome,
+TaskMaster is a web based platform that allows its users to manage their tasks, based on a categories that they assign a task, what the task is in terms of giving it a title and a description, whether it is urgent or not. They can assign a due date for when they need the task to be finished by. The application consists of the React app and an API. Welcome to the Django Rest Framework API project section.
 
-This is the Code Institute student template for Codeanywhere. We have preinstalled all of the tools you need to get started. It's perfectly ok to use this template as the basis for your project submissions.
+### API Documentation Sections
 
-You can safely delete this README.md file, or change it for your own project. Please do read it at least once, though! It contains some important information about Codeanywhere and the extensions we use. Some of this information has been updated since the video content was created. The last update to this file was: **May 11th, 2023**
+In this API documentation, you'll find the following sections:
 
-## Codeanywhere Reminders
+- **User Stories**: The functionality of the API and how it works for the user.
 
-To run a frontend (HTML, CSS, Javascript only) application in Codeanywhere, in the terminal, type:
+- **Entity Relationship Diagram**: Illustrates the relationships between different entities for a comprehensive overview.
 
-`python3 -m http.server`
+- **Models and CRUD breakdown**: Delve into the specifics of API endpoints, including how to create, retrieve, update, and delete data, along with filtering and text search capabilities.
 
-A button should appear to click: _Open Preview_ or _Open Browser_.
+- **Tests**: Understand the quality assurance measures taken to ensure the reliability and functionality of the API.
 
-To run a frontend (HTML, CSS, Javascript only) application in Codeanywhere with no-cache, you can use this alias for `python3 -m http.server`.
+- **Deployment steps**: Learn how to deploy the API to various environments, enabling you to use it effectively in your projects.
 
-`http_server`
+- **Acknowledgments**: Recognition of any libraries, frameworks, or tools used in the project.
 
-To run a backend Python file, type `python3 app.py`, if your Python file is named `app.py` of course.
+## User Stories
 
-A button should appear to click: _Open Preview_ or _Open Browser_.
+### Authentication and User Profiles
 
-In Codeanywhere you have superuser security privileges by default. Therefore you do not need to use the `sudo` (superuser do) command in the bash terminal in any of the lessons.
+| Category | as | I want to | so that I can | mapping API feature |
+| :--- | :--- | :--- | :--- | :--- |
+| Auth | User | Register for an account | Have a personal profile with a picture | dj-rest-auth Create profile (signals) |
+| Auth | User | Log in to my account | Access my personalized dashboard | dj-rest-auth Login |
+| Auth | User | Log out of my account | Ensure the security of my account | dj-rest-auth Logout |
+| Auth | User | Reset my password | Regain access to my account | dj-rest-auth Password Reset |
+| Profile | User | Update my profile information | Keep my profile up to date | Profile Update (API endpoint) |
+| Profile | User | Upload a profile picture | Personalize my profile | Profile Update (API endpoint) |
 
-To log into the Heroku toolbelt CLI:
+### Task Management
 
-1. Log in to your Heroku account and go to _Account Settings_ in the menu under your avatar.
-2. Scroll down to the _API Key_ and click _Reveal_
-3. Copy the key
-4. In Codeanywhere, from the terminal, run `heroku_config`
-5. Paste in your API key when asked
+| Category | As a | I want to | So that I can | Mapping API Feature |
+| :--- | :--- | :--- | :--- | :--- |
+| Tasks | User | Create a new task | Keep track of things I need to do | Task Create (API endpoint) |
+| Tasks | User | Edit a task | to change details such as due date, description and complete status | Task Update (API endpoint) |
+| Tasks | User | Delete a task | Remove unnecessary or completed tasks | Task Delete (API endpoint) |
+| Tasks | User | Assign a category to a task | Organize my tasks efficiently | Task Create (API endpoint) |
+| Tasks | User | Mark a task as completed | Track my progress | Task Update (API endpoint) |
+| Tasks | User | Set a due date for a task | Prioritize my work | Task Update (API endpoint) |
+| Tasks | User | Filter tasks by category | Find tasks related to specific projects | Task List (API endpoint) |
+| Tasks | User | Filter tasks by complete status | Find tasks related to that are incomplete or completed | Task List (API endpoint) |
+| Tasks | User | Filter tasks by urgent status | Find tasks related to are urgent | Task List (API endpoint) |
+| Tasks | User | View all my tasks | Have an overview of my to-do list | Task List (API endpoint) |
+| Tasks | User | View the number of incomplete tasks | Understand the urgency of my work | IncompleteTaskCountView (API endpoint) |
+| Tasks | User | View the number of urgent tasks | Prioritize my immediate work | UrgentTaskCountView (API endpoint) |
+| Categories | User | Create a new category | Organize my tasks effectively | Category Create (API endpoint) |
+| Categories | User | Update a category | Modify the category's details | Category Update (API endpoint) |
+| Categories | User | Delete a category | Remove unnecessary categories | Category Delete (API endpoint) |
 
-You can now use the `heroku` CLI program - try running `heroku apps` to confirm it works. This API key is unique and private to you so do not share it. If you accidentally make it public then you can create a new one with _Regenerate API Key_.
 
----
 
-Happy coding!
+## Entity Relationship Diagram
+
+![image](https://github.com/Neillcllghn/drf_api_TO_DO_mock/assets/109948740/89887618-b823-4d3d-80c0-209c812caa34)
+
+
+## Models and CRUD breakdown
+
+| Model | endpoints | create | retrieve | update | delete | filter | text search |
+| :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+| User | users/ users/:id | yes | yes | yes | no | no | no |
+| Profiles | profiles/ profiles/:id/ | yes (signals) | yes | yes | no | no | no |
+| Tasks | tasks/ tasks/:id | yes | yes | yes | yes | completed, urgent | title |
+| Tasks | incomplete-task-count/ | no | yes | no | no | no | no |
+| Tasks | urgent-task-count/ | no | yes | no | no | no | no |
+| Category | category/ category/:id | yes | yes | yes | yes | no | title |
+
+## Tests
+
+- **Tasks app:**
+  - logged out users cannot list tasks.
+  - logged in users can create a task.
+  - logged out users can't create a task.
+  - logged in users cannot create a task without a category.
+  - logged out users cannot retrieve a tasks with a valid id.
+  - logged out users can't retrieve a tasks with an invalid id.
+  - logged in users can update a task they own.
+  - logged in users can't update a task they don't own.
+  - logged in users can't create a task if all fields are blank.
+  - logged in users can't create a task with a due date in the past.
+ 
+- **Category app:**
+  - logged out users cannot list categories.
+  - logged in users can create a category.
+  - logged out users can't create a category.
+  - logged out users cannot retrieve a category with a valid id.
+  - logged out users can't retrieve a category with an invalid id.
+  - logged in users can update a category they own.
+  - logged in users can't update a category they don't own.
+
+[Code Institute Python Linter](https://pep8ci.herokuapp.com/) was used to validate the python files. All files returned no errors or warnings.
+
+## Deployment steps
+
+- **set the following environment variables:**
+  - CLIENT_ORIGIN
+  - CLOUDINARY_URL
+  - DATABASE_URL
+  - DISABLE_COLLECTSTATIC
+  - SECRET_KEY
+  
+- **installed the following libraries to handle database connection:**
+  - psycopg2
+  - dj-database-url
+
+- **configured dj-rest-auth library for JWTs**
+- **set allowed hosts**
+- **configured CORS:**
+  - set allowed_origins
+  
+- **set default renderer to JSON**
+- **added Procfile with release and web commands**
+- **gitignored the env.py file**
+- **generated requirements.txt**
+- **deployed to Heroku**
+
+
+##  Acknowledgments:
+
+I would like to acknowledge the following people and notes/other material used for this project:
+
+- Jubril Akolade - My Code Institute Mentor.
+- The Code Tutors for assisting me with errors I was running into from time to time and testing my code to confirm that they were free of bugs.
+- The various leactures and notes - Django Rest Framework Walkthrough on the Moments API was of great benefit and was the foundation for this project.
+- ChatGBT - for troubleshooting issues that I encountered and review of code (mistakes or errors in code that I could not see).
