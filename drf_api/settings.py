@@ -114,12 +114,13 @@ MIDDLEWARE = [
 
 CORS_ALLOWED_ORIGINS = [
     'https://taskmaster-frontend-ced22bbb7a28.herokuapp.com',
-    ]
+]
 
 CORS_ALLOW_METHODS = [
     'GET',
     'POST',
     'OPTIONS',
+    'PUT',
 ]
 
 CORS_ALLOW_CREDENTIALS = True
